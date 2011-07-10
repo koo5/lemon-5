@@ -11,13 +11,13 @@ import pygame
 from pygame.locals import *
 
 def resize(width, height):
-    glViewport(-width, -height, width, height)
+    glViewport(0, 0, width, height)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(60.0, float(width)/height, .1, 1000.)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslatef(0,0,1)
+    glTranslatef(0,0,-500)
 
 
 def message (m):
@@ -31,6 +31,8 @@ began = False
 drawing = False
 
 pygame.init()
+
+message ("fileoutplx")
 message ("start")
 
 while 1:
@@ -46,7 +48,11 @@ while 1:
     if poke_pygame:
 	for event in pygame.event.get():
             if event.type == QUIT:
+        	print >> sys.stderr, 'exit'
+        	pygame.quit()
                 sys.exit()
+            if event.type == KEYDOWN:
+        	message("key "+pygame.key.name(event.key))
 
     if not os.path.exists('./python'):
 	if not drawing: 
