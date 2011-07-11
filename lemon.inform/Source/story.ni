@@ -5,7 +5,7 @@ Include Dynamic Objects by Jesse McGrew.
 
 
 
-[chapter 0 - debug]
+chapter debug
 
 stdoutplx is a truth state that varies. stdoutplx is usually true.
 
@@ -18,7 +18,7 @@ Carry out switching to fileout:
 
 
 
-Chapter 1 - the messy bridge
+chapter the messy bridge
 
 The File of python output is called "python".
 Indentation is a number that varies. Indentation is 0.
@@ -54,7 +54,7 @@ To pygo:
 To go:
 	now gone is false;
 	append "[buffer]" to file of python output;
-	say "=>[buffer]";
+[	say "=>[buffer]";]
 	now buffer is "";
 
 To flush buffer:
@@ -85,24 +85,47 @@ To finish:
 
 
 
-chapter 2 - action
+chapter action
 
 Understand "draw" as drawing. Drawing is an action applying to nothing.
 Understand "start" as starting. Starting is an action applying to nothing.
 
 Carry out starting:
 	pythob "#begin";
+	python "from OpenGL.GL import *";
+	python "from OpenGL.GLU import *";
+	python "import pygame";
+	python "from pygame.locals import *";
+	python "import sys";
+	python "pygame.init()";
 	pythob "screen = pygame.display.set_mode((800, 600), HWSURFACE|OPENGL|DOUBLEBUF)";
-	pythob "resize(800,600)";
-	python "poke_pygame = True";
-	python "font = pygame.font.Font(None, 16)";
+	indent "def resize(width, height):";
+	python "glViewport(0, 0, width, height)";
+	python "glMatrixMode(GL_PROJECTION)";
+	python "glLoadIdentity()";
+	python "gluPerspective(60.0, float(width)/height, .1, 1000.)";
+	python "glMatrixMode(GL_MODELVIEW)";
+	python "glLoadIdentity()";
+	finish "glTranslatef(0,0,-500)";
+	python "resize(800,600)";
+	pythob "def poke_pygame():";
+	pythob "    for event in pygame.event.get():";
+	pythob "        if event.type == QUIT:";
+	pythob "            print >> sys.stderr, 'exit'";
+	pythob "            pygame.quit()";
+	pythob "            sys.exit()";
+	pythob "        if event.type == KEYDOWN:";
+	pythob "            message('key '+pygame.key.name(event.key))";
+	python "font = pygame.font.Font(None, 32)";
+	python "glEnable(GL_BLEND)";
+	python "glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
 	if indentation is not 0, say "indentation [indentation][line break]".
 
 When play ends:
 	if indentation is not 0, say "indentation [indentation][line break]".
 
 Carry out drawing:
-	python "glClearColor(0,0,0, 0.0)";
+	python "glClearColor(0,0, 0, 0.0, 0)";
 	python "glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)";
 	draw test triangle;
 	draw test box;
@@ -112,7 +135,7 @@ Carry out drawing:
 To draw (triangle - a triangle):
 	python "glBegin(GL_TRIANGLES)";
 	repeat with point running through points of triangle:
-		python "glColor3f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point])";
+		python "glColor4f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point],[entry 4 of color of point])";
 		python "glVertex3f([entry 1 of coordinates of point], [entry 2 of coordinates of point], [entry 3 of coordinates of point])";
 	python "glEnd()";
 
@@ -124,11 +147,11 @@ To draw (triangle - a triangle):
 
 
 
-chapter A control
+chapter control
 
 A control is a kind of thing.
 A control has a list of numbers called coordinates. The coordinates are usually {0, 0, 0}.
-A control has a list of numbers called color. The color is usually {1, 1, 1}.
+A control has a list of numbers called color. The color is usually {1, 1, 1, 1}.
 
 
 
@@ -136,33 +159,37 @@ A control has a list of numbers called color. The color is usually {1, 1, 1}.
 
 
 
-chapter - the input box
+chapter input box
 
-An input box is a kind of control. An input box has some indexed text called user text.  User text of input box is usually "Hellow world!".
+An input box is a kind of control. An input box has some indexed text called usertext.  Usertext of input box is usually "Hellow world!".
 
 
 To draw (box - an input box):
-	python "text = font.render([text of box], True, ([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point]))";
-	python "textureData = pygame.image.tostring(text, "RGBA", 1)";
+	python "glEnable(GL_TEXTURE_2D)";
+	python "text = font.render('[usertext of box]', True, (255,255,255))";
+	python "textureData = pygame.image.tostring(text, 'RGBA')";
 	python "width = text.get_width()";
 	python "height = text.get_height()";
+	python "print >> sys.stderr, '#', 'dims: ',  width, ' ', height, ' ' , width * height";
 	python "texture = glGenTextures(1)";
 	python "glBindTexture(GL_TEXTURE_2D, texture)";
 	python "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)";
 	python "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)";
 	python "glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)";
-	python "glColor3f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point])";
 	python "glBegin(GL_QUADS)";
+	python "glColor3f([entry 1 of color of box],[entry 2 of color of box],[entry 3 of color of box])";
+	python "glTexCoord2d(0,1)";
 	python "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
+	python "glTexCoord2d(1,1)";
 	python "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
+	python "glTexCoord2d(1,0)";
 	python "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
+	python "glTexCoord2d(0,0)";
 	python "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
 	python "glEnd()";
-
+	python "glDisable(GL_TEXTURE_2D)";
 
 A test box is an input box.
-
-
 
 
 
@@ -171,6 +198,8 @@ To unlink (P - property) of (O - object):
     (- DO_UnlinkProp({P}, {O}); -). [see Dynamic Objects for the definition of this routine]
 
 A point is a kind of thing.
+A point has a list of numbers called coordinates. The coordinates are usually {0, 0, 0}.
+A point has a list of numbers called color. The color is usually {1, 0, 0, 1}.
 
 Default point is a point.
 
@@ -178,7 +207,7 @@ A triangle is a kind of control.
 A triangle has a list of points called points. 
 Description of triangle is usually "fuckoff".
 
-A test triangle is an invisible triangle.
+A test triangle is a triangle.
 
 
 When play begins:
@@ -190,6 +219,7 @@ When play begins:
 	now coordinates of entry 1 of points of test triangle are { 100,  100, 0};
 	now coordinates of entry 2 of points of test triangle are { 100, -100, 0};
 	now coordinates of entry 3 of points of test triangle are {-100,  100, 0};
+	now color of entry 3 of points of test triangle is {0, 0, 1, 0};
 
 To key input (k - indexed text) for a (t - a triangle):
 	say "[k] for [description of t].";
@@ -199,7 +229,7 @@ To key input (k - indexed text) for a (t - a triangle):
 To draw (triangle - a triangle):
 	python "glBegin(GL_TRIANGLES)";
 	repeat with point running through points of triangle:
-		python "glColor3f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point])";
+		python "glColor4f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point],[entry 4 of color of point])";
 		python "glVertex3f([entry 1 of coordinates of point], [entry 2 of coordinates of point], [entry 3 of coordinates of point])";
 	python "glEnd()";
 

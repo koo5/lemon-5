@@ -5,39 +5,22 @@ import sys
 import traceback # 4 nice errors
 import select
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
-import pygame
-from pygame.locals import *
-
-def resize(width, height):
-    glViewport(0, 0, width, height)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(60.0, float(width)/height, .1, 1000.)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    glTranslatef(0,0,-500)
-
-
 def message (m):
-    print >> sys.stderr, 'sending: ', [m]
+    print >> sys.stderr, '#sending: ', [m]
     sys.stderr.flush()
     print m
     sys.stdout.flush()
 
-poke_pygame = False
-began = False
-drawing = False
-
-pygame.init()
-
 message ("fileoutplx")
 message ("start")
 
+world = dict()
+world["message"] = message
+world["poke_pygame"] = False
+world["began"] = False
+world["drawing"] = False
+
 while 1:
-    #time.sleep(0.05)
-    
     si,so,se = select.select([sys.stdin],[],[], 0.0)
     for s in si:
 	if s == sys.stdin:
@@ -45,18 +28,12 @@ while 1:
 	    if inp != "":
 		message(inp)
 
-    if poke_pygame:
-	for event in pygame.event.get():
-            if event.type == QUIT:
-        	print >> sys.stderr, 'exit'
-        	pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-        	message("key "+pygame.key.name(event.key))
+    if world["poke_pygame"]:
+	world["poke_pygame"]()
 
     if not os.path.exists('./python'):
-	if not drawing: 
-	    drawing = True
+	if not world["drawing"]: 
+	    world["drawing"] = True
 	    message("draw")
 	continue
 
@@ -77,28 +54,28 @@ while 1:
     
     if c[-1] != "#go\n": continue
 
-#    message ("confirm a go")
+    c = filter(lambda x: (x != "#go\n"), c)
+
 
     os.remove('./python')
 
     del c[0]
     
     if len(c) > 0:
-	while (not began) and len(c):
+	while (not world["began"]) and len(c):
 	    if c[0] == "#begin\n":
-		began = True
+		world["began"] = True
 	    else:
 		del c[0]
 
-	d = ''
-	d = d.join(c)
+	d = ''.join(c).rstrip("\n")
     
-#	print >> sys.stderr, c
+	print >> sys.stderr, d
 	
 	try:
-	    exec(d)
+	    exec(d, world)
 	except Exception, e:
-	    begun = False;
+	    world["began"] = False;
 	    print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
 
 
