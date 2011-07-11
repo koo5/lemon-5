@@ -1,12 +1,16 @@
 "aaa" by "kook"
 
 Doupatko is a room.
+
 Include Dynamic Objects by Jesse McGrew.
+To unlink (P - property) of (O - object):
+    (- DO_UnlinkProp({P}, {O}); -). [see Dynamic Objects for the definition of this routine]
 
 
 
 chapter debug
 
+[output to file or stdout?]
 stdoutplx is a truth state that varies. stdoutplx is usually true.
 
 Understand "stdoutplx" as switching to stdout. Switching to stdout is an action applying to nothing. 
@@ -99,14 +103,14 @@ Carry out starting:
 	python "import sys";
 	python "pygame.init()";
 	pythob "screen = pygame.display.set_mode((800, 600), HWSURFACE|OPENGL|DOUBLEBUF)";
-	indent "def resize(width, height):";
-	python "glViewport(0, 0, width, height)";
-	python "glMatrixMode(GL_PROJECTION)";
-	python "glLoadIdentity()";
-	python "gluPerspective(60.0, float(width)/height, .1, 1000.)";
-	python "glMatrixMode(GL_MODELVIEW)";
-	python "glLoadIdentity()";
-	finish "glTranslatef(0,0,-500)";
+	pythob "def resize(width, height):";
+	pythob "    glViewport(0, 0, width, height)";
+	pythob "    glMatrixMode(GL_PROJECTION)";
+	pythob "    glLoadIdentity()";
+	pythob "    gluPerspective(60.0, float(width)/height, .1, 1000.)";
+	pythob "    glMatrixMode(GL_MODELVIEW)";
+	pythob "    glLoadIdentity()";
+	python "    glTranslatef(0,0,-500)";
 	python "resize(800,600)";
 	pythob "def poke_pygame():";
 	pythob "    for event in pygame.event.get():";
@@ -119,10 +123,6 @@ Carry out starting:
 	python "font = pygame.font.Font(None, 32)";
 	python "glEnable(GL_BLEND)";
 	python "glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
-	if indentation is not 0, say "indentation [indentation][line break]".
-
-When play ends:
-	if indentation is not 0, say "indentation [indentation][line break]".
 
 Carry out drawing:
 	python "glClearColor(0,0, 0, 0.0, 0)";
@@ -132,12 +132,6 @@ Carry out drawing:
 	python "pygame.display.flip()";
 	python "drawing = False";
 
-To draw (triangle - a triangle):
-	python "glBegin(GL_TRIANGLES)";
-	repeat with point running through points of triangle:
-		python "glColor4f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point],[entry 4 of color of point])";
-		python "glVertex3f([entry 1 of coordinates of point], [entry 2 of coordinates of point], [entry 3 of coordinates of point])";
-	python "glEnd()";
 
 
 
@@ -162,7 +156,6 @@ A control has a list of numbers called color. The color is usually {1, 1, 1, 1}.
 chapter input box
 
 An input box is a kind of control. An input box has some indexed text called usertext.  Usertext of input box is usually "Hellow world!".
-
 
 To draw (box - an input box):
 	python "glEnable(GL_TEXTURE_2D)";
@@ -194,8 +187,6 @@ A test box is an input box.
 
 
 
-To unlink (P - property) of (O - object):
-    (- DO_UnlinkProp({P}, {O}); -). [see Dynamic Objects for the definition of this routine]
 
 A point is a kind of thing.
 A point has a list of numbers called coordinates. The coordinates are usually {0, 0, 0}.
@@ -208,7 +199,6 @@ A triangle has a list of points called points.
 Description of triangle is usually "fuckoff".
 
 A test triangle is a triangle.
-
 
 When play begins:
 	repeat with i running from 1 to 3:
@@ -237,9 +227,6 @@ To draw (triangle - a triangle):
 
 
 
-
-
-
 chapter Key input
 
 Key input focused control is a thing variable.
@@ -250,6 +237,5 @@ Understand "key [text]" as pressing a key. Pressing a key is an action applying 
 Carry out pressing a key:
 	say "[the topic understood] pressed.[line break]";
 	key input the topic understood for a key input focused control;
-	
 	
 	

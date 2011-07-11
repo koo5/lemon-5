@@ -1,0 +1,5 @@
+the meat is in lemon.inform/Source/story.ni
+compile:
+i7 -c lemon.inform
+run:
+./loop.py| glulxe lemon.inform/Build/output.ulx
