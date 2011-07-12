@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+#scroll down
+
 import os
 import time
 import sys
@@ -68,12 +71,15 @@ while 1:
 	    else:
 		del c[0]
 
-	d = ''.join(c).rstrip("\n")
+	command = ''.join(c).rstrip("\n")
     
-	print >> sys.stderr, d
+	print >> sys.stderr, command
 	
 	try:
-	    exec(d, world)
+	    #thats it. all this scary script does is
+	    #execute anything the inform7 program throws
+	    #at it thru the file called python
+	    exec(command, world)
 	except Exception, e:
 	    world["began"] = False;
 	    print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
