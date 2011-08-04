@@ -8,6 +8,7 @@ import sys
 import traceback # 4 nice errors
 import select
 
+
 def message (m):
     print >> sys.stderr, '#sending: ', [m]
     sys.stderr.flush()
@@ -24,7 +25,7 @@ world["began"] = False
 world["drawing"] = False
 
 while 1:
-    si,so,se = select.select([sys.stdin],[],[], 0.0)
+    si,so,se = select.select([sys.stdin],[],[], 0.01)
     for s in si:
 	if s == sys.stdin:
 	    inp = sys.stdin.readline().rstrip("\n")
@@ -73,7 +74,7 @@ while 1:
 
 	command = ''.join(c).rstrip("\n")
     
-	print >> sys.stderr, command
+	#print >> sys.stderr, command
 	
 	try:
 	    #thats it. all this scary script does is

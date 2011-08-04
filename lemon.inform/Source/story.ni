@@ -125,11 +125,11 @@ Carry out starting:
 	python "glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
 
 Carry out drawing:
-	python "glClearColor(0,0, 0, 0.0, 0)";
-	python "glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)";
+	pythob "glClearColor(0,0, 0, 0.0, 0)";
+	pythob "glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)";
 	draw test triangle;
 	draw test box;
-	python "pygame.display.flip()";
+	pythob "pygame.display.flip()";
 	python "drawing = False";
 
 
@@ -158,29 +158,29 @@ chapter input box
 An input box is a kind of control. An input box has some indexed text called usertext.  Usertext of input box is usually "Hellow world!".
 
 To draw (box - an input box):
-	python "glEnable(GL_TEXTURE_2D)";
-	python "text = font.render('[usertext of box]', True, (255,255,255))";
-	python "textureData = pygame.image.tostring(text, 'RGBA')";
-	python "width = text.get_width()";
-	python "height = text.get_height()";
-	python "print >> sys.stderr, '#', 'dims: ',  width, ' ', height, ' ' , width * height";
-	python "texture = glGenTextures(1)";
-	python "glBindTexture(GL_TEXTURE_2D, texture)";
-	python "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)";
-	python "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)";
-	python "glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)";
-	python "glBegin(GL_QUADS)";
-	python "glColor3f([entry 1 of color of box],[entry 2 of color of box],[entry 3 of color of box])";
-	python "glTexCoord2d(0,1)";
-	python "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
-	python "glTexCoord2d(1,1)";
-	python "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
-	python "glTexCoord2d(1,0)";
-	python "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
-	python "glTexCoord2d(0,0)";
-	python "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
-	python "glEnd()";
-	python "glDisable(GL_TEXTURE_2D)";
+	pythob "glEnable(GL_TEXTURE_2D)";
+	pythob "text = font.render('[usertext of box]', True, (255,255,255))";
+	pythob "textureData = pygame.image.tostring(text, 'RGBA')";
+	pythob "width = text.get_width()";
+	pythob "height = text.get_height()";
+	pythob "print >> sys.stderr, '#', 'dims: ',  width, ' ', height, ' ' , width * height";
+	pythob "texture = glGenTextures(1)";
+	pythob "glBindTexture(GL_TEXTURE_2D, texture)";
+	pythob "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)";
+	pythob "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)";
+	pythob "glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)";
+	pythob "glBegin(GL_QUADS)";
+	pythob "glColor3f([entry 1 of color of box],[entry 2 of color of box],[entry 3 of color of box])";
+	pythob "glTexCoord2d(0,1)";
+	pythob "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
+	pythob "glTexCoord2d(1,1)";
+	pythob "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box], [entry 3 of coordinates of box])";
+	pythob "glTexCoord2d(1,0)";
+	pythob "glVertex3f([entry 1 of coordinates of box]+width, [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
+	pythob "glTexCoord2d(0,0)";
+	pythob "glVertex3f([entry 1 of coordinates of box], [entry 2 of coordinates of box]+height, [entry 3 of coordinates of box])";
+	pythob "glEnd()";
+	pythob "glDisable(GL_TEXTURE_2D)";
 
 A test box is an input box.
 
@@ -217,11 +217,11 @@ To key input (k - indexed text) for a (t - a triangle):
 		increase entry 3 of coordinates of p by 100;
 
 To draw (triangle - a triangle):
-	python "glBegin(GL_TRIANGLES)";
+	pythob "glBegin(GL_TRIANGLES)";
 	repeat with point running through points of triangle:
-		python "glColor4f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point],[entry 4 of color of point])";
-		python "glVertex3f([entry 1 of coordinates of point], [entry 2 of coordinates of point], [entry 3 of coordinates of point])";
-	python "glEnd()";
+		pythob "glColor4f([entry 1 of color of point],[entry 2 of color of point],[entry 3 of color of point],[entry 4 of color of point])";
+		pythob "glVertex3f([entry 1 of coordinates of point], [entry 2 of coordinates of point], [entry 3 of coordinates of point])";
+	pythob "glEnd()";
 
 
 
