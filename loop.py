@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
-#scroll down
-
 import os
 import time
 import sys
 import traceback # 4 nice errors
 import select
 
+minframelen = 3#1.0/30.0
+framestart = 0
+
+f = open('P', 'r')
 
 def message (m):
     print >> sys.stderr, '#sending: ', [m]
@@ -15,75 +17,67 @@ def message (m):
     print m
     sys.stdout.flush()
 
-message ("fileoutplx")
-message ("start")
-
 world = dict()
 world["message"] = message
-world["poke_pygame"] = False
-world["began"] = False
-world["drawing"] = False
+world["loop"] = False
+
+ready = False
+commands = []
+premands = []
 
 while 1:
-    si,so,se = select.select([sys.stdin],[],[], 0.01)
-    for s in si:
-	if s == sys.stdin:
-	    inp = sys.stdin.readline().rstrip("\n")
-	    if inp != "":
-		message(inp)
-
-    if world["poke_pygame"]:
-	world["poke_pygame"]()
-
-    if not os.path.exists('./python'):
-	if not world["drawing"]: 
-	    world["drawing"] = True
-	    message("draw")
-	continue
-
-    f = open('python', 'r')
-    c = f.read()
-    f.close()
+  
+    #fps    
+    now = time.clock()
+    lastframelen = now - framestart
+    if lastframelen < minframelen:
+	sleep = minframelen - lastframelen
+    else:
+	sleep = 0.0001
+    framestart = now
     
-
+    print  >> sys.stderr,"sleep for ",sleep
     
-    if len(c) < 1: continue
-    if c[0] != '*': continue
+    #stdin
+#    si,so,se = select.select([sys.stdin],[],[], sleep)
+#    for s in si:
+#	if s == sys.stdin:
+#	    inp = sys.stdin.readline().rstrip("\n")
+#	    if inp != "":
+#		message(inp)
 
+    if world["loop"]:
+	world["loop"]()
+    #print "look"
+    #commands input
+    for line in sys.stdin.readline():
+	print>>sys.stderr, line
+	if line == "!go":
+	    ready = True
+	    break
+	if line[0] == '^':
+	    premands.append(line[1:])
+	if line[0] == '!':
+	    commands.append(line[1:])
 
+    if not ready: continue
+    ready = False
 
-    c = c.splitlines(True)
+    premands.append(commands)
+    command = '\n'.join(premands)#.rstrip("\n")
 
-    c = filter(lambda x: (x != "*\n") and (x != "*") and (x != "\n"), c)
-    
-    if c[-1] != "#go\n": continue
+    commands = []
+    premands = []
 
-    c = filter(lambda x: (x != "#go\n"), c)
-
-
-    os.remove('./python')
-
-    del c[0]
-    
-    if len(c) > 0:
-	while (not world["began"]) and len(c):
-	    if c[0] == "#begin\n":
-		world["began"] = True
-	    else:
-		del c[0]
-
-	command = ''.join(c).rstrip("\n")
-    
-	#print >> sys.stderr, command
+    print >> sys.stderr, "ZEE COMMAND IST:\n"+command+"\n<><><>"
 	
-	try:
-	    #thats it. all this scary script does is
-	    #execute anything the inform7 program throws
-	    #at it thru the file called python
-	    exec(command, world)
-	except Exception, e:
-	    world["began"] = False;
-	    print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
-
+    try:
+	#thats it. all this scary script does is
+	#execute anything the inform7 program throws
+	#at it thru the file called P
+	exec(command, world)
+    except Exception, e:
+	print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
+	message("error")
 
 
