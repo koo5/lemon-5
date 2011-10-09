@@ -38,39 +38,38 @@ To pu (p - indexed text):
 chapter action
 
 when play begins:
-	say "!from OpenGL.GL import *";
-	say "!from OpenGL.GLU import *";
-	say "!import pygame";
-	say "!from pygame.locals import *";
-	say "!import sys";
-	say "!pygame.init()";
-	say "!screen = pygame.display.set_mode((800, 600), OPENGL|DOUBLEBUF)";
-	say "!font = pygame.font.Font(None, 32)";
-	say "!glEnable(GL_BLEND)";
-	say "!glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
-	say "!def resize(width, height):";
-	say "!    glViewport(0, 0, width, height)";
-	say "!    glMatrixMode(GL_PROJECTION)";
-	say "!    glLoadIdentity()";
-	say "!    gluPerspective(60.0, float(width)/height, .1, 1000.)";
-	say "!    glMatrixMode(GL_MODELVIEW)";
-	say "!    glLoadIdentity()";
-	say "!    glTranslatef(0,0,-500)";
-	say "!resize(800,600)";
-	say "!def loop():";
-	say "!    for event in pygame.event.get():";
-	say "!        if event.type == QUIT:";
-	say "!            print >> sys.stderr, 'exit'";
-	say "!            pygame.quit()";
-	say "!            sys.exit()";
-	say "!        if event.type == KEYDOWN:";
-	say "!            message('key '+ pygame.key.name(event.key))";
+	say "`from OpenGL.GL import *";
+	say "`from OpenGL.GLU import *";
+	say "`import pygame";
+	say "`from pygame.locals import *";
+	say "`import sys";
+	say "`pygame.init()";
+	say "`screen = pygame.display.set_mode((800, 600), OPENGL|DOUBLEBUF)";
+	say "`font = pygame.font.Font(None, 32)";
+	say "`glEnable(GL_BLEND)";
+	say "`glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
+	say "`def resize(width, height):";
+	say "`    glViewport(0, 0, width, height)";
+	say "`    glMatrixMode(GL_PROJECTION)";
+	say "`    glLoadIdentity()";
+	say "`    gluPerspective(60.0, float(width)/height, .1, 1000.)";
+	say "`    glMatrixMode(GL_MODELVIEW)";
+	say "`    glLoadIdentity()";
+	say "`    glTranslatef(0,0,-500)";
+	say "`resize(800,600)";
+	say "`def loop():";
+	say "`    for event in pygame.event.get():";
+	say "`        if event.type == QUIT:";
+	say "`            print >> sys.stderr, 'exit'";
+	say "`            pygame.quit()";
+	say "`            sys.exit()";
+	say "`        if event.type == KEYDOWN:";
+	say "`            message('key '+ pygame.key.name(event.key))";
 	say "^import random";
-	say "!    r = random.random()";
-	say "!    glClearColor(r,r,r, 0)";
-	say "!    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT)";
+	say "`    r = random.random()";
+	say "`    glClearColor(r,r,r, 0)";
+	say "`    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT)";
 	say "!    pygame.display.flip()";
-	say "!go";
 
 
 
