@@ -23,8 +23,6 @@ world["loop"] = False
 ready = False
 commands = []
 premands = []
-coma = False
-
 buff = ""
 
 while 1:
@@ -40,20 +38,12 @@ while 1:
     #print  >> sys.stderr,"sleep for ",sleep
     
     #stdin
-    if coma:
-	time.sleep(sleep)
-	sleep = 0.00001
     si,so,se = select.select([sys.stdin],[],[], sleep)
     coma = False
     for s in si:
 	if s == sys.stdin:
 		buff += sys.stdin.read()
-		buff += line
-		print >> sys.stderr, buff
-		if len(line) == 1 and line != '\n': 
-		    coma = True
-		    break
-		lines = re.split(r'[\n\^\`\!]')
+		lines = re.split('(\n>|\^|\`|\!',buff)
 		candidates = lines[:-1]
 		buff = lines[-1]
 		commands.append(map(lambda x: x[1:], filter(lambda x: len(x) > 0 and x[0] in ['`', '!'], candidates)))
