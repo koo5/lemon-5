@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
+import re
 import os
-import time
 import sys
-import traceback # 4 nice errors
+import time
 import select
+import traceback # 4 nice errors
 
-minframelen = 3#1.0/30.0
+minframelen = 2#1.0/30.0
 framestart = 0
-
-f = open('P', 'r')
 
 def message (m):
     print >> sys.stderr, '#sending: ', [m]
@@ -24,57 +23,61 @@ world["loop"] = False
 ready = False
 commands = []
 premands = []
+coma = False
+
+buff = ""
 
 while 1:
   
     #fps    
-    now = time.clock()
-    lastframelen = now - framestart
+    lastframelen = time.clock() - framestart
     if lastframelen < minframelen:
 	sleep = minframelen - lastframelen
     else:
-	sleep = 0.0001
-    framestart = now
+	sleep = 0.000001
+    framestart = time.clock()
     
-    print  >> sys.stderr,"sleep for ",sleep
+    #print  >> sys.stderr,"sleep for ",sleep
     
     #stdin
-#    si,so,se = select.select([sys.stdin],[],[], sleep)
-#    for s in si:
-#	if s == sys.stdin:
-#	    inp = sys.stdin.readline().rstrip("\n")
-#	    if inp != "":
-#		message(inp)
+    if coma:
+	time.sleep(sleep)
+	sleep = 0.00001
+    si,so,se = select.select([sys.stdin],[],[], sleep)
+    coma = False
+    for s in si:
+	if s == sys.stdin:
+		buff += sys.stdin.read()
+		buff += line
+		print >> sys.stderr, buff
+		if len(line) == 1 and line != '\n': 
+		    coma = True
+		    break
+		lines = re.split(r'[\n\^\`\!]')
+		candidates = lines[:-1]
+		buff = lines[-1]
+		commands.append(map(lambda x: x[1:], filter(lambda x: len(x) > 0 and x[0] in ['`', '!'], candidates)))
+		premands.append(map(lambda x: x[1:], filter(lambda x: len(x) > 0 and x[0] == '^', candidates)))
+		ready = filter(lambda x: len(x) > 0 and x[0] == '!', candidates).len() > 0
+		print >> sys.stderr, candidates
 
-    if world["loop"]:
-	world["loop"]()
-    #print "look"
-    #commands input
-    for line in sys.stdin.readline():
-	print>>sys.stderr, line
-	if line == "!go":
-	    ready = True
-	    break
-	if line[0] == '^':
-	    premands.append(line[1:])
-	if line[0] == '!':
-	    commands.append(line[1:])
+    lastframelen = time.clock() - framestart
+    if lastframelen > minframelen:
+	if world["loop"]:
+	    world["loop"]()
 
     if not ready: continue
     ready = False
 
     premands.append(commands)
-    command = '\n'.join(premands)#.rstrip("\n")
+    command = '\n'.join(premands)
 
     commands = []
     premands = []
-
+#
     print >> sys.stderr, "ZEE COMMAND IST:\n"+command+"\n<><><>"
-	
+#	
     try:
-	#thats it. all this scary script does is
-	#execute anything the inform7 program throws
-	#at it thru the file called P
 	exec(command, world)
     except Exception, e:
 	print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
