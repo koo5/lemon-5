@@ -1,76 +1,45 @@
 #!/usr/bin/env python
 
-import re
 import os
 import sys
 import time
 import select
 import traceback # 4 nice errors
 
-minframelen = 2#1.0/30.0
-framestart = 0
-
-def message (m):
-    print >> sys.stderr, '#sending: ', [m]
-    sys.stderr.flush()
-    print m
-    sys.stdout.flush()
-
 world = dict()
-world["message"] = message
-world["loop"] = False
 
-ready = False
-commands = []
-premands = []
-buff = ""
+fps = 1#30.0
 
-while 1:
-  
-    #fps    
-    lastframelen = time.clock() - framestart
-    if lastframelen < minframelen:
-	sleep = minframelen - lastframelen
-    else:
-	sleep = 0.000001
-    framestart = time.clock()
-    
-    #print  >> sys.stderr,"sleep for ",sleep
-    
-    #stdin
-    si,so,se = select.select([sys.stdin],[],[], sleep)
-    coma = False
-    for s in si:
-	if s == sys.stdin:
-		buff += sys.stdin.read()
-		lines = re.split('(\n>|\^|\`|\!',buff)
-		candidates = lines[:-1]
-		buff = lines[-1]
-		commands.append(map(lambda x: x[1:], filter(lambda x: len(x) > 0 and x[0] in ['`', '!'], candidates)))
-		premands.append(map(lambda x: x[1:], filter(lambda x: len(x) > 0 and x[0] == '^', candidates)))
-		ready = filter(lambda x: len(x) > 0 and x[0] == '!', candidates).len() > 0
-		print >> sys.stderr, candidates
+def msg(m):
+	print m
+	sys.stdout.flush()
+	print >> sys.stderr, m
+	sys.stderr.flush()
 
-    lastframelen = time.clock() - framestart
-    if lastframelen > minframelen:
-	if world["loop"]:
-	    world["loop"]()
+def error(e):
+	print >> sys.stderr, 'error'.join(traceback.format_exception(*sys.exc_info()))
+	print "error"
 
-    if not ready: continue
-    ready = False
+def mainloop(last_loop_start_time):
+	while 1:
+		last_loop_spent_time = time.clock() - last_loop_start_time
+		if last_loop_spent_time > 1.0 / fps :
+			last_loop_start_time = time.clock()
+			if "loop" in world:
+				world["loop"]()
+		si,so,se = select.select([sys.stdin],[],[], 000000.1)
+		for s in si:
+			if s == sys.stdin:
+				line = sys.stdin.readline()
+				print >> sys.stderr, line
+				try:
+					exec(line, world)
+				except Exception, e:
+					error(e)
+				except SyntaxError, e:
+					error(e)
 
-    premands.append(commands)
-    command = '\n'.join(premands)
+msg( "look up")
 
-    commands = []
-    premands = []
-#
-    print >> sys.stderr, "ZEE COMMAND IST:\n"+command+"\n<><><>"
-#	
-    try:
-	exec(command, world)
-    except Exception, e:
-	print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
-	message("error")
-
+mainloop(0)
 
