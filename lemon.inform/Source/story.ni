@@ -18,10 +18,12 @@ To py (Q - text):
 
 when play begins:
 	change the command prompt to "#";
+	say the colored box definition;
 	[]
-	py "import sys
-	print >> sys.stderr, 9*9*9
-	sys.stderr.flush()
+	py "
+	objects = []
+	import sys
+	dbg(2*2)
 	import random
 	import os
 	from OpenGL.GL import *
@@ -64,7 +66,7 @@ when play begins:
 	say "            sys.exit()#!";
 	say "        if event.type == KEYDOWN:#!";
 	say "            message('key '+ pygame.key.name(event.key))#!";
-	say "    r = random.random()/5#!";
+	say "    r = random.random()/15#!";
 	say "    glClearColor(r,r,r, 0)#!";
 	say "    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT)#!";
 	say "    glEnable(GL_TEXTURE_2D)#!";
@@ -81,9 +83,35 @@ when play begins:
 	say "    glEnd()#!";
 	say "    glDisable(GL_TEXTURE_2D)#!";
 	say "    pygame.display.flip()#!";
-
-
+	now rgb color of test box is 0 0 255;
+	repeat with object running through every object in window 1:
+		say "objects.append([python name of colored box]())";
 
 a screen is a kind of container. a window is a kind of container. 
 
 error contains a screen called screen 1.
+screen 1 contains a window called window 1.
+
+
+
+a colored box is a kind of thing.
+
+rgb color is a kind of value.
+1 255 255 specifies an rgb color.
+
+colored box has an rgb color.
+python name of colored box is text that varies; python name of colored box is "colored_box";
+window 1 contains a colored box called test box.
+
+to say the colored box definition:
+	say "class [python name of colored box]:#...";
+	say "    r=g=b=200#!";
+	say "    def draw(self):#...";
+	say "        glBegin(GL_QUADS)#!";
+	say "        glColor3f(self.r, self.g, self.b)#!";
+	say "        glVertex2f(40,50)#!";
+	say "        glVertex2f(140,50)#!";
+	say "        glVertex2f(140,150)#!";
+	say "        glVertex2f(40,150)#!";
+	say "        glEnd()#!";
+	say "#!";

@@ -7,7 +7,7 @@ import select
 import traceback # 4 nice errors
 
 buf = []
-fps = 30.0
+fps = 3.0
 
 def msg(m):
 	print m
@@ -16,7 +16,7 @@ def msg(m):
 	sys.stderr.flush()
 
 def dbg(m):
-	print >> sys.stderr, m
+	print >> sys.stderr, m,
 	sys.stderr.flush()
 
 def err(e):
