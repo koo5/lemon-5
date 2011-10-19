@@ -36,7 +36,6 @@ when play begins:
 	font = pygame.font.Font(None, 50)
 	glEnable(GL_BLEND)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
-	[]
 	say "def resize(width, height):#...";
 	say "    glViewport(0, 0, width, height)#!";
 	say "    glMatrixMode(GL_PROJECTION)#!";
@@ -58,6 +57,7 @@ when play begins:
 	say "    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)#!";
 	say "    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)#!";
 	say "text()#!";
+	say the random text drawing routine;
 	say "def loop():#...";
 	say "    for event in pygame.event.get():#!";
 	say "        if event.type == QUIT:#!";
@@ -69,19 +69,9 @@ when play begins:
 	say "    r = random.random()/15#!";
 	say "    glClearColor(r,r,r, 0)#!";
 	say "    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT)#!";
-	say "    glEnable(GL_TEXTURE_2D)#!";
-	say "    glBegin(GL_QUADS)#!";
-	say "    glColor3f(1,1,1)#!";
-	say "    glTexCoord2d(0,1)#!";
-	say "    glVertex3f(0,0,0)#!";
-	say "    glTexCoord2d(1,1)#!";
-	say "    glVertex3f(100,0,0)#!";
-	say "    glTexCoord2d(1,0)#!";
-	say "    glVertex3f(100,100,0)#!";
-	say "    glTexCoord2d(0,0)#!";
-	say "    glVertex3f(0,100,0)#!";
-	say "    glEnd()#!";
-	say "    glDisable(GL_TEXTURE_2D)#!";
+	say "    for o in objects:#!";
+	say "        o.draw()#!";
+	say "    hellow_orld()#!";
 	say "    pygame.display.flip()#!";
 	now rgb color of test box is 0 0 255;
 	repeat with object running through every object in window 1:
@@ -115,3 +105,19 @@ to say the colored box definition:
 	say "        glVertex2f(40,150)#!";
 	say "        glEnd()#!";
 	say "#!";
+
+to say the random text drawing routine:
+	say "def hellow_orld():#...";
+	say "    glEnable(GL_TEXTURE_2D)#!";
+	say "    glBegin(GL_QUADS)#!";
+	say "    glColor3f(1,1,1)#!";
+	say "    glTexCoord2d(0,1)#!";
+	say "    glVertex3f(0,0,0)#!";
+	say "    glTexCoord2d(1,1)#!";
+	say "    glVertex3f(100,0,0)#!";
+	say "    glTexCoord2d(1,0)#!";
+	say "    glVertex3f(100,100,0)#!";
+	say "    glTexCoord2d(0,0)#!";
+	say "    glVertex3f(0,100,0)#!";
+	say "    glEnd()#!";
+	say "    glDisable(GL_TEXTURE_2D)#!";
