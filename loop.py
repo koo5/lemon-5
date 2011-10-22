@@ -8,6 +8,7 @@ import traceback # 4 nice errors
 
 buf = []
 fps = 3.0
+acm = fopen('/dev/ttyACM0', 'r')
 
 def msg(m):
 	print m
@@ -46,21 +47,23 @@ def mainloop(last_loop_start_time):
 			if "loop" in world:
 				world["loop"]()
 		
-		wait = 1.0 / fps - time.time() - last_loop_start_time
+		wait = 1.0 / fps - time.time() + last_loop_start_time
 		if wait <= 0:
 			wait = 0.00000001
 		
-		si,so,se = select.select([sys.stdin],[],[], wait)
+		si,so,se = select.select([sys.stdin, acm],[],[], wait)
 		for s in si:
 			if s == sys.stdin:
 				line = sys.stdin.readline()
 				dbg(line)
-				if len(buf) > 1 and line.endswith("#...\n"):
+				if len(buf) > 1 and line.endswith("#...\n") and not line.startswith("    "):
 					run()
 				buf.append(line)
 				if not line.startswith("    ") and not line.endswith("#...\n"):
 					run()
-					
+			if s == acm:
+				line = acm.readline()
+				msg("temp " + line)
 msg( "look up")
 
 mainloop(0.0)
