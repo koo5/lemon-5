@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 import os
 import sys
 import time
+import fcntl
 import select
 import traceback # 4 nice errors
 
@@ -12,22 +13,34 @@ fps = 3.0
 #acm = fopen('/dev/ttyACM0', 'r')
 #acm = open("fakeacm", 'r')
 pycode = open('pycode', 'r')
+fcntl.fcntl(pycode, fcntl.F_SETFL, fcntl.fcntl(pycode, fcntl.F_GETFL) | os.O_NONBLOCK)
 
-def msg(m):
-	print m
-	sys.stdout.flush()
-	print >> sys.stderr, m
-	sys.stderr.flush()
+msgs=[]
+free = True
 
 def dbg(m):
 	print >> sys.stderr, m
 	sys.stderr.flush()
 
-def err(e):
-	print >> sys.stderr, ''.join(traceback.format_exception(*sys.exc_info()))
-	print "error"
+def ping():
+	if len(msgs) > 0:
+		m = msgs[0]
+		del msgs[0]
+		print m
+		sys.stdout.flush()
+		dbg(u"»"+m)
+	else:
+		free = True
 
-def run_buf():
+def q(m):
+	msgs.append(m)
+	if free:
+		ping()
+
+def err(e):
+	dbg(''.join(traceback.format_exception(*sys.exc_info())))
+
+def run_the_buf():
 	global buf
 	try:
 		exec("\n".join(buf), world)
@@ -38,30 +51,30 @@ def run_buf():
 	finally:
 		buf = []
 
-def nop():
-	pass
-
-def i7_header(f, name):
-    f.write("* //72B4F7AB-F525-45F0-B5C7-FF9C0D38BCD7// "+name+"\n")
-
 def res(x):
-	time.sleep(10)
-	with open('res', 'w') as result:
-		i7_header(result, "res")
-		result.write(str(x))
-		result.close()
+	for c in str(x)+"\n":
+		print c
+		dbg(u"ƹ"+c)
+	sys.stdout.flush()
+		
+
+
+
 
 world = dict()
-
-world["msg"] = msg
+#world["msg"] = msg
 world["dbg"] = dbg
 world["res"] = res
-world["nop"] = nop
+world["ping"] = ping
+world["q"] = q
+
 
 last_loop_start_time = 0
 
+readbuf = ""
+
 def mainloop():
-	global buf, last_loop_start_time
+	global buf, last_loop_start_time, readbuf
 	if time.time() - last_loop_start_time > 1.0 / fps :
 		last_loop_start_time = time.time()
 		if "loop" in world:
@@ -70,27 +83,37 @@ def mainloop():
 	wait = 1.0 / fps - time.time() + last_loop_start_time
 	if wait <= 0:
 		wait = 0.00000001
-	pycode.flush()
+	#time.sleep(1)
 	si,so,se = select.select([sys.stdin, pycode],[],[], wait)
+	si.append(pycode)#
 	for s in si:
 		if s == sys.stdin:
-			msg(s.readline().rstrip('\n'))
+			q(s.readline().rstrip('\n'))
 		if s == pycode:
-			line = s.readline().replace('{', '[').replace('}',']')
-			dbg(line 	)
-#			dbg(len(line))
-			if len(buf) > 1 and not line.startswith("    "):
-				run_buf()
-			if len(line) != 1:
-				buf.append(line.rstrip('\n'))
-			if not line.startswith("    ") and not line.endswith("#...\n"):
-				run_buf()
+			try:
+				readbuf  +=  s.read()
+			except Exception, e:
+				pass
+			finally:
+				pass
+			for line in readbuf.split("\n")[:-1]:
+				line = line.replace('{', '[').replace('}',']')
+				dbg(u"«"+line 	)
+#				dbg(len(line))
+				if len(buf) > 1 and not line.startswith("    "):
+					run_the_buf()
+				if len(line) != 1:
+					buf.append(line.rstrip('\n'))
+				if not line.startswith("    ") and not line.endswith("#..."):
+					run_the_buf()
+			readbuf = readbuf.split("\n")[-1]
 #		if s == acm:
 #			line = acm.readline()
 #			msg("temp " + line)
 
-msg( "look up")
+#q( "")
 
 while 1:
 	mainloop()
 
+ 

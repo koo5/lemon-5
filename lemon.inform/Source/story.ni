@@ -2,6 +2,9 @@
 "#RANDOMIZE TIMER"
 
 
+Include Flexible Windows by Jon Ingold.
+Include Glulx Input Loops by Erik Temple.
+
 
 Include (-
 [ run Q;
@@ -17,28 +20,37 @@ To py (Q - text):
 Rule for printing the banner text: say "#error" instead
 
 
-
-the file of result (owned by another project) is called "res";
-the file of somethings (owned by another project) is called "wut";
-
 res is indexed text that varies;
 
+
+to get res:
+	now res is "";
+	now keystroke-code is 0;
+	while keystroke-code is not -6:
+		process the result loop;
+		[say "#[res]...[keystroke-code].";
+]
+
+result loop is an input-loop. the focal event type is char-event.
+
+input loop event-handling rule when the current input loop is result loop (this is the my input handling rule):
+	now res is "[res][keystroke]";
+	stop input loop processing;
 
 
 to decide if filesystem path (path - indexed text) exists:
 	say "res(os.path.exists('[path]'))#!";
-	say "nop()#!";
-	now res is "[text of the file of result]";
+	get res;
 	if res is "True":
 		decide on true;
 	else if res is "False":
 		decide on false;
 	else:
-		write "'[res]' is now '[text of the file of result]'" to the file of somethings;
-		end the story finally saying "dbg('ERROR')#!";
+		end the story finally saying "dbg('ERROR:'+'[res]')#!";
 
 
 chapter whatever
+
 
 
 
@@ -48,10 +60,24 @@ when play begins:
 [	say "msg('create pygame window')#!";]
 	say the startup code;
 	if filesystem path "./loop.py" exists:
-		say "dbg 'ZZZZZZZZZZZZZyes'#!";
+		say "dbg ('ZZZZZZZZZZZZZyes')#!";
 	else:
-		say "dbg 'ZZZZZZZZZZZZZno'#!";
-	say "msg('pick nose')#!";
+		say "dbg ('ZZZZZZZZZZZZZno')#!";
+	say "q('pick nose')#!";
+	boot pygame;
+	create pygame window;
+
+to say the startup code:
+	say "#hi.";
+	py "
+	import sys
+	import random
+	import os
+	objects = []
+	";
+	
+
+
 
 Understand "block" as blocking. Blocking is an action applying to nothing.
 carry out blocking:
@@ -63,10 +89,12 @@ carry out running a python command:
 	say "[the topic understood]#!";
 
 
+Understand "create pygame window" as creating pygame window.
+creating pygame window is an action applying to nothing. 
+Carry out creating pygame window:
+	create pygame window;
 
-Understand "create pygame window" as pygamin.
-Pygamin is an action applying to nothing. 
-Carry out pygamin:
+to create pygame window:
 	say "dbg('creating window...')#!";
 	say the colored box definition;
 	say the startup code;
@@ -79,6 +107,10 @@ Carry out pygamin:
 	now rgb color of test box is 0 0 255;
 	repeat with object running through every object in window 1:
 		say "objects.append([python name of colored box]())";
+
+
+
+
 
 
 
@@ -127,15 +159,7 @@ to def hellow_orld::
 	say "    glEnd()#!";
 	say "    glDisable(GL_TEXTURE_2D)#!";
 
-to say the startup code:
-	py "
-	import sys
-	import random
-	import os
-	objects = []
-	";
-	
-to create window:
+to boot pygame:
 	py "
 	from OpenGL.GL import *
 	from OpenGL.GLU import *
