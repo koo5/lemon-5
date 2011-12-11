@@ -97,7 +97,7 @@ def mainloop():
 			finally:
 				pass
 			for line in readbuf.split("\n")[:-1]:
-				line = line.replace('{', '[').replace('}',']')
+				line = line.replace('{', '[').replace('}',']').rstrip("#!").rstrip("#...")
 				dbg(u"«"+line 	)
 #				dbg(len(line))
 				if len(buf) > 1 and not line.startswith("    "):

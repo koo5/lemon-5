@@ -2,6 +2,11 @@
 "#RANDOMIZE TIMER"
 
 
+"xxx" is a room.
+
+Use no deprecated features.
+
+
 Include Flexible Windows by Jon Ingold.
 Include Glulx Input Loops by Erik Temple.
 
@@ -43,11 +48,10 @@ to decide if filesystem path (path - indexed text) exists:
 	get res;
 	if res is "True":
 		decide on true;
-	else if res is "False":
+	else: 
+		if res is not "False":
+			say "dbg('ERROR: '+'[res]')#!";
 		decide on false;
-	else:
-		end the story finally saying "dbg('ERROR:'+'[res]')#!";
-
 
 chapter whatever
 
@@ -328,3 +332,13 @@ Carry out booting:
 
 
 
+
+After reading a command:
+	say "#[player's command][line break]";
+	make no decision;
+
+to say 
+
+a polygon is a kind of thing.
+
+Clock is a kind of container. in the clock is a polygon called hour.
